@@ -40,8 +40,8 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def get_steer_feedforward_silverado(desired_lateral_accel, speed):
     ANGLE_COEF = 0.40612450
-    ANGLE_COEF2_RIGHT = 0.14742903
-    ANGLE_COEF2_LEFT = 0.07317035
+    ANGLE_COEF2_RIGHT = 0.20
+    ANGLE_COEF2_LEFT = 0.10
     SIGMOID_COEF_RIGHT = 0.35
     SIGMOID_COEF_LEFT = 0.35
     x = ANGLE_COEF * (desired_lateral_accel) * (40.23 / (max(0.2,speed)))
