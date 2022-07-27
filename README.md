@@ -1,3 +1,5 @@
+This fork is focused on the 2019 to 2022 Silverado and Sierra non-refreshed body. If you have the new wide screen this will not work. 
+
 openpilot - GM Vehicle Extensions
 ------
 
