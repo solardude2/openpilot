@@ -8,7 +8,7 @@ from selfdrive.car.docs_definitions import CarFootnote, CarInfo, Column, Harness
 Ecu = car.CarParams.Ecu
 
 class CarControllerParams:
-  STEER_MAX = 600  # Safety limit, not LKA max. Trucks use 600.
+  STEER_MAX = 350  # Safety limit, not LKA max. Trucks use 600.
   STEER_STEP = 2  # control frames per command
   STEER_DELTA_UP = 7
   STEER_DELTA_DOWN = 17
