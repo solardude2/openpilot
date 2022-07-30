@@ -304,10 +304,8 @@ GearShifter = car.CarState.GearShifter
       ret.steerActuatorDelay = 0.11
       ret.lateralTuning.pid.kpBP = [11., 15.5, 22., 31.0]
       ret.lateralTuning.pid.kpV = [0.12, 0.14, 0.20, 0.25] 
-      ret.lateralTuning.pid.kdBP = [0.]
-      ret.lateralTuning.pid.kdV = [0.05]
-      ret.lateralTuning.pid.kf = 1.1 # when turning right. use with get_steer_feedforward_silverado()
-      ret.lateralTuning.pid.kfLeft = .7 #  when turning left. use with get_steer_feedforward_silverado()
+      ret.lateralTuning.pid.kf = 0.6 
+     
       
       ret.longitudinalTuning.kpBP = [5., 20., 35.]
       ret.longitudinalTuning.kpV = [2.3, 1.5, 1.5]
