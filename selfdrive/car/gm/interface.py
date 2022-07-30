@@ -13,30 +13,87 @@ ButtonType = car.CarState.ButtonEvent.Type
 EventName = car.CarEvent.EventName
 GearShifter = car.CarState.GearShifter
 
-class CarInterface(CarInterfaceBase):
-  @staticmethod
-  def get_pid_accel_limits(CP, current_speed, cruise_speed):
-    params = CarControllerParams()
-    return params.ACCEL_MIN, params.ACCEL_MAX
-
   # Determined by iteratively plotting and minimizing error for f(angle, speed) = steer.
   @staticmethod
   def get_steer_feedforward_volt(desired_angle, v_ego):
-    desired_angle *= 0.02904609
-    sigmoid = desired_angle / (1 + fabs(desired_angle))
-    return 0.10006696 * sigmoid * (v_ego + 3.12485927)
+    ANGLE = 0.03093722278106523
+    ANGLE_OFFSET = 0.#46341000035928637
+    SIGMOID_SPEED = 0.07928458395144745
+    SIGMOID = 0.4983180128530419
+    SPEED = -0.0024896011696167266
+    return get_steer_feedforward_sigmoid(desired_angle, v_ego, ANGLE, ANGLE_OFFSET, SIGMOID_SPEED, SIGMOID, SPEED)
 
   @staticmethod
   def get_steer_feedforward_acadia(desired_angle, v_ego):
-    desired_angle *= 0.09760208
-    sigmoid = desired_angle / (1 + fabs(desired_angle))
-    return 0.04689655 * sigmoid * (v_ego + 10.028217)
+    ANGLE = 0.1314029550298617
+    ANGLE_OFFSET = 0.#8317776927522815
+    SIGMOID_SPEED = 0.03820691400292691
+    SIGMOID = 0.3785405719285944
+    SPEED = -0.0010868615264700465
+    return get_steer_feedforward_sigmoid(desired_angle, v_ego, ANGLE, ANGLE_OFFSET, SIGMOID_SPEED, SIGMOID, SPEED)
+
+  @staticmethod
+  def get_steer_feedforward_bolt_euv(desired_angle, v_ego):
+    ANGLE = 0.0758345580739845
+    ANGLE_OFFSET = 0.#31396926577596984
+    SIGMOID_SPEED = 0.04367532050459129
+    SIGMOID = 0.43144116109994846
+    SPEED = -0.002654134623368279
+    return get_steer_feedforward_sigmoid(desired_angle, v_ego, ANGLE, ANGLE_OFFSET, SIGMOID_SPEED, SIGMOID, SPEED)
+  
+  @staticmethod
+  def get_steer_feedforward_bolt(desired_angle, v_ego):
+    ANGLE = 0.06370624896135679
+    ANGLE_OFFSET = 0.#32536345911579184
+    SIGMOID_SPEED = 0.06479105208670367
+    SIGMOID = 0.34485246691603205
+    SPEED = -0.0010645479469461995
+    return get_steer_feedforward_sigmoid(desired_angle, v_ego, ANGLE, ANGLE_OFFSET, SIGMOID_SPEED, SIGMOID, SPEED)
+  
+  @staticmethod
+  def get_steer_feedforward_silverado(desired_angle, v_ego):
+    ANGLE = 0.06539361463056717
+    ANGLE_OFFSET = -0.#8390269362439537
+    SIGMOID_SPEED = 0.023681877712247515
+    SIGMOID = 0.5709779025308087
+    SPEED = -0.0016656455765509301
+    return get_steer_feedforward_sigmoid(desired_angle, v_ego, ANGLE, ANGLE_OFFSET, SIGMOID_SPEED, SIGMOID, SPEED)
+  
+  # Volt determined by iteratively plotting and minimizing error for f(angle, speed) = steer.
+  @staticmethod
+  def get_steer_feedforward_tahoe(desired_lateral_accel, v_ego):
+    ANGLE_COEF = -0.53345154
+    ANGLE_OFFSET = 0.
+    SPEED_OFFSET = 0.
+    SPEED_POWER = 1.
+    SIGMOID_COEF = 17.81939495
+    SPEED_COEF = -0.47166994
+    return get_steer_feedforward_erf(desired_lateral_accel, v_ego, ANGLE_COEF, ANGLE_OFFSET, SPEED_OFFSET, SPEED_POWER, SIGMOID_COEF, SPEED_COEF)
+  
+  @staticmethod
+  def get_steer_feedforward_suburban(desired_angle, v_ego):
+    ANGLE = 0.06562376600261893
+    ANGLE_OFFSET = 0.#-2.656819831714162
+    SIGMOID_SPEED = 0.04648878299738527
+    SIGMOID = 0.21826990273744493
+    SPEED = -0.001355528078762762
+    return get_steer_feedforward_sigmoid(desired_angle, v_ego, ANGLE, ANGLE_OFFSET, SIGMOID_SPEED, SIGMOID, SPEED)
 
   def get_steer_feedforward_function(self):
-    if self.CP.carFingerprint == CAR.VOLT:
+    if self.CP.carFingerprint == CAR.VOLT or self.CP.carFingerprint == CAR.VOLT_NR:
       return self.get_steer_feedforward_volt
     elif self.CP.carFingerprint == CAR.ACADIA:
       return self.get_steer_feedforward_acadia
+    elif self.CP.carFingerprint == CAR.BOLT_EUV:
+      return self.get_steer_feedforward_bolt_euv
+    elif self.CP.carFingerprint == CAR.BOLT_NR:
+      return self.get_steer_feedforward_bolt
+    elif self.CP.carFingerprint == CAR.SILVERADO_NR:
+      return self.get_steer_feedforward_silverado
+    elif self.CP.carFingerprint == CAR.SUBURBAN:
+      return self.get_steer_feedforward_suburban
+    elif self.CP.carFingerprint == CAR.TAHOE_NR:
+      return self.get_steer_feedforward_tahoe
     else:
       return CarInterfaceBase.get_steer_feedforward_default
 
@@ -236,38 +293,26 @@ class CarInterface(CarInterfaceBase):
       ret.radarOffCan = True # ASCM vehicles (typically) have radar
 
     elif candidate == CAR.SILVERADO_NR:
-      # Thanks skip for the tune!
       ret.minEnableSpeed = -1.
       ret.minSteerSpeed = -1 * CV.MPH_TO_MS
       ret.mass = 2400. + STD_CARGO_KG
       ret.wheelbase = 3.745
       ret.steerRatio = 16.3
-      MAX_LAT_ACCEL = 2.9
-      ret.lateralTuning.init('torque')
-      ret.lateralTuning.torque.useSteeringAngle = True
-      ret.lateralTuning.torque.kp = 2.0 / MAX_LAT_ACCEL
-      ret.lateralTuning.torque.kf = 1.0 / MAX_LAT_ACCEL
-      ret.lateralTuning.torque.ki = 0.50 / MAX_LAT_ACCEL
-      ret.lateralTuning.torque.friction = 0.1
+      ret.pcmCruise = True 
       ret.centerToFront = ret.wheelbase * .49
       ret.steerRateCost = .4
       ret.steerActuatorDelay = 0.11
-      ret.pcmCruise = True # TODO: see if this resolves cruiseMismatch
-
+      ret.lateralTuning.pid.kpBP = [11., 15.5, 22., 31.0]
+      ret.lateralTuning.pid.kpV = [0.12, 0.14, 0.20, 0.25] 
+      ret.lateralTuning.pid.kdBP = [0.]
+      ret.lateralTuning.pid.kdV = [0.05]
+      ret.lateralTuning.pid.kf = 1.1 # when turning right. use with get_steer_feedforward_silverado()
+      ret.lateralTuning.pid.kfLeft = .7 #  when turning left. use with get_steer_feedforward_silverado()
+      
       ret.longitudinalTuning.kpBP = [5., 20., 35.]
       ret.longitudinalTuning.kpV = [2.3, 1.5, 1.5]
       ret.longitudinalTuning.kiBP = [5., 20., 35.]
       ret.longitudinalTuning.kiV = [0.30, 0.30, 0.28]
-
-      # JJS: just saving previous values for posterity
-      # ret.minEnableSpeed = -1. # engage speed is decided by pcm
-      # ret.minSteerSpeed = -1 * CV.MPH_TO_MS
-      # ret.mass = 2241. + STD_CARGO_KG
-      # ret.wheelbase = 3.745
-      # ret.steerRatio = 16.3 # Determined by skip # 16.3 # From a 2019 SILVERADO
-      # ret.centerToFront = ret.wheelbase * 0.49
-      # ret.steerActuatorDelay = 0.11 # Determined by skip # 0.075
-      # ret.pcmCruise = True # TODO: see if this resolves cruiseMismatch
 
     elif candidate == CAR.SUBURBAN:
       ret.minEnableSpeed = -1. # engage speed is decided by pcmFalse
