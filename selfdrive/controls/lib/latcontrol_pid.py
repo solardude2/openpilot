@@ -12,8 +12,7 @@ class LatControlPID(LatControl):
                              (CP.lateralTuning.pid.kiBP, CP.lateralTuning.pid.kiV),
                              k_f=CP.lateralTuning.pid.kf, pos_limit=self.steer_max, neg_limit=-self.steer_max)
     self.get_steer_feedforward = CI.get_steer_feedforward_function()
-    self.kf_left_factor = 1. if (CP.lateralTuning.pid.kfLeft <= 0. or CP.lateralTuning.pid.kf == 0.) else CP.lateralTuning.pid.kfLeft / CP.lateralTuning.pid.kf
-
+    
   def reset(self):
     super().reset()
     self.pid.reset()
@@ -36,10 +35,6 @@ class LatControlPID(LatControl):
     else:
       # offset does not contribute to resistive torque
       steer_feedforward = self.get_steer_feedforward(angle_steers_des_no_offset, CS.vEgo)
-
-      # switch to left feedforward (positive angles)
-      if angle_steers_des_no_offset > 0.:
-        steer_feedforward *= self.kf_left_factor
       
       output_steer = self.pid.update(error, override=CS.steeringPressed,
                                      feedforward=steer_feedforward, speed=CS.vEgo)
