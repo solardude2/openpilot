@@ -337,13 +337,13 @@ class CarInterface(CarInterfaceBase):
       ret.centerToFront = ret.wheelbase * .49
       ret.steerRateCost = .4
       ret.steerActuatorDelay = 0.11
-      ret.lateralTuning.pid.kpBP = [15., 31.]
-      ret.lateralTuning.pid.kpV = [0.10, 0.16]
-      ret.lateralTuning.pid.kiBP = [0., 31.]
-      ret.lateralTuning.pid.kiV = [0.0001, 0.0002]
+      ret.lateralTuning.pid.kpBP = [11., 15.5, 22., 31.0]
+      ret.lateralTuning.pid.kpV = [0.12, 0.14, 0.18, 0.20] 
+      ret.lateralTuning.pid.kiBP = [0., 22., 31.]
+      ret.lateralTuning.pid.kiV = [0., 0., 0.035]
       ret.lateralTuning.pid.kdBP = [0.]
-      ret.lateralTuning.pid.kdV = [0.01]
-      ret.lateralTuning.pid.kf = .6 # when turning right. use with get_steer_feedforward_silverado()
+      ret.lateralTuning.pid.kdV = [0.05]
+      ret.lateralTuning.pid.kf = 0.6 # when turning right. use with get_steer_feedforward_silverado()
       ret.lateralTuning.pid.kfLeft = .4 #  when turning left. use with get_steer_feedforward_silverado()
 
     elif candidate == CAR.SUBURBAN:
