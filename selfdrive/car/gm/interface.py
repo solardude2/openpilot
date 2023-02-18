@@ -327,16 +327,15 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.torque.friction = 0.01
 
     elif candidate == CAR.SILVERADO_NR:
-      # Thanks skip for the tune!
       ret.minEnableSpeed = -1.
       ret.minSteerSpeed = -1 * CV.MPH_TO_MS
       ret.mass = 2400. + STD_CARGO_KG
       ret.wheelbase = 3.745
       ret.steerRatio = 16.3
-      ret.pcmCruise = True # TODO: see if this resolves cruiseMismatch
+      ret.pcmCruise = True 
       ret.centerToFront = ret.wheelbase * .49
       ret.steerRateCost = .4
-      ret.steerActuatorDelay = 0.18 # working was 0.11
+      ret.steerActuatorDelay = 0.15 # working was 0.11
       ret.lateralTuning.pid.kpBP = [11., 15.5, 22., 31.0]
       ret.lateralTuning.pid.kpV = [0.12, 0.14, 0.17, 0.19] 
       ret.lateralTuning.pid.kiBP = [0., 22., 29.0, 31.]
