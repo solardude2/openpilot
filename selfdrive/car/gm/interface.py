@@ -339,7 +339,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpBP = [11., 15.5, 22., 31.0]
       ret.lateralTuning.pid.kpV = [0.12, 0.14, 0.17, 0.20] # non towing [0.12, 0.14, 0.17, 0.20] towing [0.12, 0.14, 0.20, 0.25]
       ret.lateralTuning.pid.kiBP = [0., 22., 29.0, 31.]
-      ret.lateralTuning.pid.kiV = [0., 0., 0., 0.025] # 0001 non towing   .025 towing
+      ret.lateralTuning.pid.kiV = [0., 0., 0., 0.0001] # 0001 non towing   .025 towing
       ret.lateralTuning.pid.kdBP = [0.]
       ret.lateralTuning.pid.kdV = [0.01]
       ret.lateralTuning.pid.kf = 0.50 # .55 was working when turning right.
