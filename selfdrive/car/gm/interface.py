@@ -184,6 +184,7 @@ class CarInterface(CarInterfaceBase):
       # On the Bolt, the ECM and camera independently check that you are either above 5 kph or at a stop
       # with foot on brake to allow engagement, but this platform only has that check in the camera.
       # TODO: check if this is split by EV/ICE with more platforms in the future
+      ret.steerActuatorDelay = 0.11
       if ret.openpilotLongitudinalControl:
         ret.minEnableSpeed = -1.
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
