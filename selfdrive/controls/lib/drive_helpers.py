@@ -189,7 +189,7 @@ class VCruiseHelper:
     if self.CP.pcmCruise and self.CP.pcmCruiseSpeed:
       return
 
-    initial = V_CRUISE_INITIAL_EXPERIMENTAL_MODE if experimental_mode and not dynamic_experimental_control else V_CRUISE_INITIAL
+    initial = V_CRUISE_INITIAL
 
     resume_buttons = (ButtonType.accelCruise, ButtonType.resumeCruise)
 
